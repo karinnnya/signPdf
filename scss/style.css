@@ -1,0 +1,132 @@
+@font-face {
+  font-family: FakePearl-Regular;
+  src: url(https://cdn.jsdelivr.net/gh/max32002/FakePearl@1.1/webfont/FakePearl-Regular.woff2) format("woff2"), url(https://cdn.jsdelivr.net/gh/max32002/FakePearl@1.1/webfont/FakePearl-Regular.woff) format("woff");
+}
+body {
+  font-family: "FakePearl-Regular";
+  height: 100%;
+}
+
+.ls-5 {
+  letter-spacing: 0.5em;
+}
+
+:root {
+  --bs-info-rgb:255,250,244 !important;
+  --bs-primary-rgb:249,180,113 !important;
+  --bs-secondary-rgb:81,168,188 !important;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+img {
+  height: 100%;
+  display: block;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.btn-secondary {
+  background-color: #51A8BC !important;
+  border-color: #51A8BC !important;
+}
+
+.btn-info {
+  background-color: #FFFAF4 !important;
+  border-color: #FFFAF4 !important;
+}
+
+.shadowR {
+  box-shadow: 4px 0px 10px rgba(0, 0, 0, 0.07);
+}
+
+.shadowL {
+  box-shadow: -4px 0px 10px rgba(0, 0, 0, 0.07);
+}
+
+.dragging {
+  background-color: black;
+}
+
+.color-button {
+  transition: 0.5s;
+}
+
+.color-button:hover {
+  background-color: #F9B471 !important;
+  color: white !important;
+}
+
+.upnewpdf {
+  border: 3px dotted #EEEDE8 !important;
+  border-radius: 35px;
+  letter-spacing: 0.3em;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.upnewpdf:hover {
+  background: #FFFAF4 !important;
+}
+
+.filesList:hover {
+  cursor: pointer;
+  background: #FFFAF4 !important;
+}
+
+.signColor {
+  width: 35px;
+  height: 35px;
+  margin-right: 25px;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.progBox {
+  transition: 0.3s;
+}
+.progBox .progCircle {
+  width: 30px;
+  height: 30px;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  background-color: white;
+}
+.progBox p {
+  color: grey;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.progEnd p {
+  color: #51A8BC !important;
+}
+.progEnd .progCircle {
+  background: #51A8BC !important;
+}
+
+.home {
+  background: url("../images/bg.png") no-repeat center center/cover;
+}
+
+@media (max-width: 992px) {
+  .home {
+    background: url("../images/bg_s.png") no-repeat center center/cover;
+  }
+  .homeLogo {
+    margin-top: 30%;
+  }
+  .footer {
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25) !important;
+    padding-top: 25px !important;
+  }
+  .prog {
+    margin-bottom: 40px !important;
+  }
+}/*# sourceMappingURL=style.css.map */

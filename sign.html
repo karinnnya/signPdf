@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="./scss/style.css">
+
+  <title>線上簽名</title>
+
+
+</head>
+
+<body>
+  <div id="app">
+    <div class="position-relative" style=" background: #EEEDE8; height: 100vh;">
+
+      <header class="bg-info">
+        <div class="container d-flex justify-content-between p-4">
+          <a href="index.html"> <img alt="logo" class="logo" src="images/LOGO2.png" /></a>
+
+          <div>
+
+            <nav class="ls-5">
+              <a class="text-secondary" href="sign.html">簽署新文件</a>
+            </nav>
+          </div>
+        </div>
+      </header>
+
+
+      <div class="container p-5 " v-show="state=='1'" style="height: 75vh; ">
+        <div class="d-flex bg-info ls-5" style=" border-radius:35px 35px 0 0">
+          <h4 class=" w-50  text-center p-3 " type="button" @click="checknewfile(true)"
+            style="border-radius: 35px 35px 0 0; margin: 0;" :class="{
+              'shadowR' : newfile,
+              'bg-white': newfile,
+              'text-primary': newfile,
+              'text-secondary': !newfile,
+              
+
+         
+            }">上傳新文件</h4>
+          <h4 class="w-50 text-center p-3" type="button" @click="checknewfile(false) "
+            style="border-radius: 35px 35px 0 0; margin: 0;" :class="{
+            'shadowL' : !newfile,
+            'bg-white': !newfile,
+            'text-primary': !newfile,
+            'text-secondary': newfile,
+
+          
+          }">已上傳文件</h4>
+        </div>
+
+
+        <!-- <div>
+          <input type="file" ref="newFile" accept="application/pdf" @change="upFile" />
+          </div> -->
+        <div class="position-relative h-100" style=" padding: 50px; background: white; border-radius:0 0 35px 35px">
+
+
+
+          <label for="upload" class=" upnewpdf text-black-50 w-100 h-100 p-3 d-flex flex-column justify-content-center align-items-center "
+            v-if="newfile"    
+             @dragover.prevent
+            @drop="handleDrop">
+            <input type="file" accept="application/pdf" id="upload" style="display: none;"
+              @change="pushList($event.srcElement.files)">
+            <h4>點擊此處上傳 或 直接拖曳檔案</h4>
+            <img style="height: 20%;"
+              src="data:image/png;base64,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">
+            <h5>(限10MB以下PDF檔)</h5>
+          </label>
+
+
+          <div v-else>
+
+
+            <div v-if="files.length!=0">
+
+              <div class="row text-black-50">
+                <div class=" text-center col-7">
+                  <p>名稱</p>
+                </div>
+                <div class=" text-center col-4">
+                  <p>上傳時間</p>
+                </div>
+                <!-- <div class=" text-center col-3">
+                  <p>上次開啟</p>
+                </div> -->
+                <div class="col-1"></div>
+              </div>
+
+              <div class="w-100 p-3" style="height: 450px; display: block; overflow-y: auto; white-space: nowrap">
+                <div>
+                  <div class="row mb-1 rounded-pill p-3 filesList" v-for="(i,index) in files" :key="i.key"
+                    @click="nowFile=i" :class="{
+                  'bg-info': nowFile===i,
+                }">
+
+                    <div class=" text-truncate col-7 ">
+                      <p>{{ i.name}}</p>
+                    </div>
+                    <div class="text-center col-4">
+                      <p>{{ i.uploadtime}}</p>
+                    </div>
+                    <!-- <div class="text-center col-3">
+                      <p>{{ i.opentime}}</p>
+                    </div> -->
+                    <div class="col-1">
+                      <svg @click="pdfClear(index)" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                        fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                        <path
+                          d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
+                      </svg>
+                      <!-- <button type="button" @click="pdfClear(index)"> 測試測試</button> -->
+
+                    </div>
+                  </div>
+                </div>
+                <div type="button" @click="pdfClear('all')"
+                  class="text-black-50 d-flex position-absolute bottom-0 mb-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                    class="bi bi-trash-fill" viewBox="0 0 16 16">
+                    <path
+                      d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
+                  </svg>
+                  <p>清除全部</p>
+
+
+                </div>
+
+              </div>
+
+            </div>
+            <h4 class="text-center text-black-50 ls-5 " v-else>
+              尚未上傳任何文件
+            </h4>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="container-fluid" v-show="state==='2' || state==='3'" style="height: 90vh; ">
+        <div class="row  h-100">
+          <div class="col-2  bg-white h-100">
+            <div class="p-2 ">
+              <p class="text-black-50">檔案名稱</p>
+              <p v-if="nowFile!=undefined" class="text-truncate">{{nowFile.name}}</p>
+
+
+              <div>
+
+                <p class="text-black-50 mt-3">選擇簽名</p>
+
+                <div v-for="(sign, index) in pafSigns" :key="index"
+                  class="d-flex p-2 mb-2 border align-items-center justify-content-between" v-show="pafSigns!=[]"
+                  style="   cursor: pointer;">
+
+                  <img @click="uppdfSign(sign)" class="sign" :src="sign" ref="pafSign" style="width: 80%;" />
+                  <div @click="pointSign('delSign',index)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                      class="bi bi-x-circle-fill text-black-50" viewBox="0 0 16 16">
+                      <path
+                        d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z" />
+                    </svg>
+                  </div>
+
+                </div>
+
+              </div>
+
+              <div type="button" class="border p-3 text-center mt-2  " @click="pointSign('creatNewSign')">
+                創建新簽名
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-brush-fill" viewBox="0 0 16 16">
+                  <path d="M15.825.12a.5.5 0 0 1 .132.584c-1.53 3.43-4.743 8.17-7.095 10.64a6.067 6.067 0 0 1-2.373 1.534c-.018.227-.06.538-.16.868-.201.659-.667 1.479-1.708 1.74a8.118 8.118 0 0 1-3.078.132 3.659 3.659 0 0 1-.562-.135 1.382 1.382 0 0 1-.466-.247.714.714 0 0 1-.204-.288.622.622 0 0 1 .004-.443c.095-.245.316-.38.461-.452.394-.197.625-.453.867-.826.095-.144.184-.297.287-.472l.117-.198c.151-.255.326-.54.546-.848.528-.739 1.201-.925 1.746-.896.126.007.243.025.348.048.062-.172.142-.38.238-.608.261-.619.658-1.419 1.187-2.069 2.176-2.67 6.18-6.206 9.117-8.104a.5.5 0 0 1 .596.04z"/>
+                </svg>
+              </div>
+
+            </div>
+          </div>
+          <div class="col-10">
+            <!-- <canvas id="pdfCanvas" ref="pdfCanvas"  style="border: 1px solid #000;"> </canvas> -->
+            <div class="d-flex justify-content-center mt-5" style="max-height: 70vh;">
+              <div style="display: block; overflow: auto; white-space: nowrap">
+                <canvas id="canvas" ref="pdfCanvas" style="border: 1px solid #000"></canvas>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="position-absolute bottom-0 bg-info p-2 footer" style="background: #FFFAF4; width: 100%;">
+        <div class="container p-3 d-flex justify-content-between  align-items-center flex-column flex-md-row">
+
+          <div class=" position-relative ">
+
+            <div class=" progress bg-white shadow " style="height: 5px; width: 300px; ">
+              <div class="progress-bar bg-secondary" role="progressbar" style="width: 0%;" :class="{
+                'w-50': state === '2',
+                'w-100': state === '3'
+              }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+
+            <!-- <div class="bg-white prog" style="height: 10px; width: 300px; transition:0.3s;  border: 3px solid white;"></div> -->
+
+            <div class="d-flex prog" style="margin-top: -5%;">
+              <div
+                class="progBox progEnd position-absolute start-0 translate-middle d-flex flex-column align-items-center">
+                <p>上傳文件</p>
+
+                <div class="progCircle bg-secondary"></div>
+
+              </div>
+              <div class="progBox position-absolute 
+              start-50 translate-middle d-flex flex-column align-items-center" :class="{
+                'progEnd': state === '2' || state === '3',
+  
+              }">
+                <p>進行簽署</p>
+                <div class="progCircle"></div>
+              </div>
+              <div :class="{
+                'progEnd':  state === '3',
+  
+              }" class="progBox position-absolute start-100 translate-middle d-flex flex-column align-items-center ">
+                <p>下載文件</p>
+
+                <div class="progCircle">
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <button class="btn btn-secondary btn-lg me-3 rounded-pill  shadow bg-body rounded" type="button" @click="changeBtn('cancel')"
+              :disabled="state==1">取消</button>
+            <button class="btn btn-secondary btn-lg rounded-pill ps-5 pe-5  shadow bg-body rounded" type="button" @click="changeBtn('next')"
+              :disabled="nowFile === undefined ">{{btn}}</button>
+          </div>
+        </div>
+
+      </div>
+
+
+    </div>
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" ref="signmodal">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-3" style="border-radius: 35px; width: 800px;">
+          <div class="modal-body">
+
+            <div class="">
+              <h3 class="title text-center mb-3 ls-5 text-black-50">在框格內簽名</h3>
+              <div>
+                <canvas style="border: 1px solid black " :width="canvasSignWidth" :height="canvasSignHeight"
+                  class="sign-canvas " id="signCanvas" ref="signCanvas" @mousedown="startPosition"
+                  @mouseup="finishedPosition" @mouseleave="finishedPosition" @mousemove="draw"
+                  @touchstart="startPosition" @touchend="finishedPosition" @touchcancel="finishedPosition"
+                  @touchmove="draw">
+                </canvas>
+              </div>
+            </div>
+            <div>
+
+            </div>
+
+
+            <div class="d-flex justify-content-between mt-3">
+              <div class="d-flex align-items-center">
+                <p type="button" @click="pointSign('resetNewSign')" style="margin: 0;">清除</p>
+                <div class="d-flex ms-3">
+                  <div class="signColor  me-2" type="button" @click="signColor='black'"
+                    style="  background-color: black;"></div>
+                  <div class="signColor me-2" type="button" @click="signColor='red'" style="  background-color: red;">
+                  </div>
+                  <div class="signColor" type="button" @click="signColor='blue'" style="  background-color: blue;">
+                  </div>
+                </div>
+              </div>
+              <div>
+                <button type="button" class=" me-2 btn btn-info btn-lg rounded-pill shadow-sm bg-body rounded" data-bs-dismiss="modal">取消</button>
+                <button type="button" class=" btn btn-secondary btn-lg rounded-pill shadow-sm bg-body rounded" @click="pointSign('saveNewSign')">簽好了</button>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+    crossorigin="anonymous"></script>
+
+  <script src="https://unpkg.com/vue@next"></script>
+  <script src="https://unpkg.com/fabric@latest/dist/fabric.js"></script>
+  <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
+
+  <script src="
+  https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js
+  "></script>
+
+  <script src="./sign.js" type="module"></script>
+
+</body>
+
+</html>
